@@ -20,13 +20,30 @@ def MyClick():
     sfr.load_encoding_images(path)
     root.destroy()
 
+def Detect(frame):
+
+    # Detect Faces
+    face_locations, face_names = sfr.detect_known_faces(frame)
+    for face_loc, name in zip(face_locations, face_names):
+        y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
+
+        cv2.putText(frame, name,(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
+        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 200), 4)
+
+    cv2.destroyAllWindows()
+    cv2.imshow("Frame", frame)
+
+    key = cv2.waitKey()
+    cv2.destroyAllWindows()
+    
+
+
 while True:
     ret, frame = cap.read()
     cv2.imshow("Video", frame)
     key = cv2.waitKey(1)
     if key == 27:
-        frameLast = frame
-        break
+        Detect(frame)
     if key == ord('q'):
         exit(0)
     if key == ord(' '):
@@ -39,20 +56,3 @@ while True:
         root.mainloop()
         # cv2.imwrite("")
 
-    
-cap.release()
-frame = frameLast
-
-# Detect Faces
-face_locations, face_names = sfr.detect_known_faces(frame)
-for face_loc, name in zip(face_locations, face_names):
-    y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
-
-    cv2.putText(frame, name,(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
-    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 200), 4)
-
-cv2.destroyAllWindows()
-cv2.imshow("Frame", frame)
-
-key = cv2.waitKey()
-cv2.destroyAllWindows()
